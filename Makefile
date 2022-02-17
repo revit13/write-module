@@ -1,36 +1,31 @@
 include Makefile.env
 
-export DOCKER_USERNAME ?= fybrik
-export DOCKER_PASSWORD ?= 
-export DOCKER_HOSTNAME ?= ghcr.io
-export DOCKER_NAMESPACE ?= fybrik
-export DOCKER_TAGNAME ?= 0.0.0
+GOARCH = amd64
+OS = linux
 
-DOCKER_FILE ?= Dockerfile
-DOCKER_CONTEXT ?= .
-DOCKER_NAME ?= hello-world-module
+.DEFAULT_GOAL := all
 
-APP_IMG ?= ${DOCKER_HOSTNAME}/${DOCKER_NAMESPACE}/${DOCKER_NAME}:${DOCKER_TAGNAME}
+all: source-build
 
-.PHONY: docker-all
-docker-all: docker-build docker-push
+.PHONY: source-build
+source-build:
+	CGO_ENABLED=0 GOOS="$(OS)" GOARCH="$(GOARCH)" go build -o write-module main.go
 
 .PHONY: docker-build
-docker-build:
-	docker build $(DOCKER_CONTEXT) -t ${APP_IMG} -f $(DOCKER_FILE)
+docker-build: source-build
+	docker build . -t ${IMG} -f Dockerfile
+	rm write-module
 
-.PHONY: docker-push
-docker-push:
-ifneq (${DOCKER_PASSWORD},)
-	@docker login \
-		--username ${DOCKER_USERNAME} \
-		--password ${DOCKER_PASSWORD} ${DOCKER_HOSTNAME}
-endif
-	docker push ${APP_IMG}
 
-.PHONY: docker-rmi
-docker-rmi:
-	docker rmi ${APP_IMG} || true
+.PHONY: clean
+clean:
+	rm -f ./write-module
 
+.PHONY: test
+test:
+	go test -v ./...
+
+include hack/make-rules/verify.mk
 include hack/make-rules/tools.mk
 include hack/make-rules/helm.mk
+include hack/make-rules/docker.mk

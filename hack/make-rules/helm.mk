@@ -15,8 +15,8 @@ HELM_VALUES ?= \
 	--set hello=world1
 
 TEMP := /tmp
-CHART_LOCAL_PATH ?= hello-world-module
-CHART_NAME ?= hello-world-module-chart
+CHART_LOCAL_PATH ?= write-module-chart
+CHART_NAME ?= write-module-chart
 HELM_RELEASE ?= rel1-${DOCKER_NAME}
 HELM_TAG ?= 0.0.0
 
