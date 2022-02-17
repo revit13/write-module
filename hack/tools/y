@@ -1,0 +1,285 @@
++ set -e
++ source ./common.sh
+++ set -o errexit
+++ set -o nounset
+++ set -o pipefail
+++ arch=amd64
+++ os=unknown
+++ [[ linux-gnu == \l\i\n\u\x\-\g\n\u ]]
+++ os=linux
+++ [[ linux == \u\n\k\n\o\w\n ]]
+++ NO_COLOR=
+++ '[' -z '' ']'
+++ header='[1;33m'
+++ reset='[0m'
++++ pwd
+++ export PATH=/data/checkagain/hello-world-module/hack/tools/bin:/home/eres/gems/bin:/home/eres/Downloads/SAClientUtil.8.0.1461/bin:/home/linuxbrew/.linuxbrew/bin/brew:/usr/local/go/bin:/opt/anaconda3/bin:/home/eres/bin:/home/eres/.cargo/bin:/opt/anaconda3/envs/EresEnv/bin:/opt/anaconda3/condabin:/home/eres/gems/bin:/home/eres/Downloads/SAClientUtil.8.0.1461/bin:/home/linuxbrew/.linuxbrew/bin/brew:/usr/local/go/bin:/opt/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/opt/puppetlabs/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin
+++ PATH=/data/checkagain/hello-world-module/hack/tools/bin:/home/eres/gems/bin:/home/eres/Downloads/SAClientUtil.8.0.1461/bin:/home/linuxbrew/.linuxbrew/bin/brew:/usr/local/go/bin:/opt/anaconda3/bin:/home/eres/bin:/home/eres/.cargo/bin:/opt/anaconda3/envs/EresEnv/bin:/opt/anaconda3/condabin:/home/eres/gems/bin:/home/eres/Downloads/SAClientUtil.8.0.1461/bin:/home/linuxbrew/.linuxbrew/bin/brew:/usr/local/go/bin:/opt/anaconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/opt/puppetlabs/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin:/usr/local/kubebuilder/bin:/usr/local/kubebuilder/bin:/usr/local/go/bin
++ export WORKING_DIR=test-script
++ WORKING_DIR=test-script
++ export ACCESS_KEY=1234
++ ACCESS_KEY=1234
++ export SECRET_KEY=1234
++ SECRET_KEY=1234
++ kubernetesVersion=kind19
++ fybrikVersion=0.5.0
++ moduleVersion=0.5.0
++ certManagerVersion=1.2.0
++ moduleResourceVersion=0.5.0
++ '[' kind19 == kind19 ']'
++ bin/kind delete cluster
+Deleting cluster "kind" ...
++ bin/kind create cluster --image=kindest/node:v1.19.11@sha256:07db187ae84b4b7de440a73886f008cf903fcf5764ba8106a9fd5243d6f32729
+Creating cluster "kind" ...
+ • Ensuring node image (kindest/node:v1.19.11) 🖼  ...
+ ✓ Ensuring node image (kindest/node:v1.19.11) 🖼
+ • Preparing nodes 📦   ...
+ ✓ Preparing nodes 📦 
+ • Writing configuration 📜  ...
+ ✓ Writing configuration 📜
+ • Starting control-plane 🕹️  ...
+ ✓ Starting control-plane 🕹️
+ • Installing CNI 🔌  ...
+ ✓ Installing CNI 🔌
+ • Installing StorageClass 💾  ...
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-kind"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+Have a nice day! 👋
++ helm repo add jetstack https://charts.jetstack.io
+"jetstack" already exists with the same configuration, skipping
++ helm repo add hashicorp https://helm.releases.hashicorp.com
+"hashicorp" already exists with the same configuration, skipping
++ helm repo add fybrik-charts https://fybrik.github.io/charts
+"fybrik-charts" already exists with the same configuration, skipping
++ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "hashicorp" chart repository
+...Successfully got an update from the "fybrik-charts" chart repository
+...Successfully got an update from the "jetstack" chart repository
+...Successfully got an update from the "localstack-charts" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
++ helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.2.0 --create-namespace --set installCRDs=true --wait --timeout 220s
+NAME: cert-manager
+LAST DEPLOYED: Wed Feb  2 07:36:23 2022
+NAMESPACE: cert-manager
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+cert-manager has been deployed successfully!
+
+In order to begin issuing certificates, you will need to set up a ClusterIssuer
+or Issuer resource (for example, by creating a 'letsencrypt-staging' issuer).
+
+More information on the different types of issuers and how to configure them
+can be found in our documentation:
+
+https://cert-manager.io/docs/configuration/
+
+For information on how to configure cert-manager to automatically provision
+Certificates for Ingress resources, take a look at the `ingress-shim`
+documentation:
+
+https://cert-manager.io/docs/usage/ingress/
++ helm install vault fybrik-charts/vault --create-namespace -n fybrik-system --set vault.injector.enabled=false --set vault.server.dev.enabled=true --values https://raw.githubusercontent.com/fybrik/fybrik/v0.5.3/charts/vault/env/dev/vault-single-cluster-values.yaml
+NAME: vault
+LAST DEPLOYED: Wed Feb  2 07:37:06 2022
+NAMESPACE: fybrik-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
++ kubectl wait --for=condition=ready --all pod -n fybrik-system --timeout=220s
+pod/vault-0 condition met
++ helm install fybrik-crd fybrik-charts/fybrik-crd -n fybrik-system --version v0.5.0 --wait
+NAME: fybrik-crd
+LAST DEPLOYED: Wed Feb  2 07:37:29 2022
+NAMESPACE: fybrik-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
++ helm install fybrik fybrik-charts/fybrik -n fybrik-system --version v0.5.0 --wait
+NAME: fybrik
+LAST DEPLOYED: Wed Feb  2 07:37:33 2022
+NAMESPACE: fybrik-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
++ kubectl apply -f ../../third_party/datashim/dlf.yaml
+namespace/dlf created
+serviceaccount/csi-s3 created
+serviceaccount/csi-attacher created
+serviceaccount/csi-provisioner created
+serviceaccount/dataset-operator created
+secret/webhook-server-tls created
+storageclass.storage.k8s.io/csi-s3 created
+customresourcedefinition.apiextensions.k8s.io/datasetsinternal.com.ie.ibm.hpsys created
+customresourcedefinition.apiextensions.k8s.io/datasets.com.ie.ibm.hpsys created
+clusterrole.rbac.authorization.k8s.io/csi-s3 created
+clusterrole.rbac.authorization.k8s.io/external-attacher-runner created
+clusterrole.rbac.authorization.k8s.io/external-provisioner-runner created
+clusterrole.rbac.authorization.k8s.io/dataset-operator created
+clusterrolebinding.rbac.authorization.k8s.io/csi-s3 created
+clusterrolebinding.rbac.authorization.k8s.io/csi-attacher-role created
+clusterrolebinding.rbac.authorization.k8s.io/csi-provisioner-role created
+clusterrolebinding.rbac.authorization.k8s.io/dataset-operator created
+role.rbac.authorization.k8s.io/external-attacher-cfg created
+role.rbac.authorization.k8s.io/external-provisioner-cfg created
+rolebinding.rbac.authorization.k8s.io/csi-attacher-role-cfg created
+rolebinding.rbac.authorization.k8s.io/csi-provisioner-role-cfg created
+service/csi-attacher-s3 created
+service/csi-provisioner-s3 created
+service/webhook-server created
+daemonset.apps/csi-s3 created
+deployment.apps/dataset-operator created
+statefulset.apps/csi-attacher-s3 created
+statefulset.apps/csi-provisioner-s3 created
+csidriver.storage.k8s.io/ch.ctrox.csi.s3-driver created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/dlf-mutating-webhook-cfg created
++ kubectl wait --for=condition=ready pods -l app.kubernetes.io/name=dlf -n dlf --timeout=500s
+pod/csi-attacher-s3-0 condition met
+pod/csi-s3-mdg42 condition met
+pod/dataset-operator-644f75fcbb-6s85j condition met
++ sleep 10
++ kubectl apply -f https://github.com/fybrik/hello-world-module/releases/download/v0.5.0/hello-world-module.yaml -n fybrik-system
+fybrikmodule.app.fybrik.io/hello-world-module created
++ kubectl create namespace fybrik-notebook-sample
+namespace/fybrik-notebook-sample created
++ kubectl config set-context --current --namespace=fybrik-notebook-sample
+Context "kind-kind" modified.
++ helm repo add localstack-charts https://localstack.github.io/helm-charts
+"localstack-charts" already exists with the same configuration, skipping
++ helm install localstack localstack-charts/localstack --set startServices=s3 --set service.type=ClusterIP
+NAME: localstack
+LAST DEPLOYED: Wed Feb  2 07:38:44 2022
+NAMESPACE: fybrik-notebook-sample
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace fybrik-notebook-sample -l "app.kubernetes.io/name=localstack,app.kubernetes.io/instance=localstack" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace fybrik-notebook-sample $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace fybrik-notebook-sample port-forward $POD_NAME 8080:$CONTAINER_PORT
++ kubectl wait --for=condition=ready --all pod -n fybrik-notebook-sample --timeout=400s
+pod/localstack-c45cd77bb-s7bwt condition met
++ export ENDPOINT=http://127.0.0.1:4566
++ ENDPOINT=http://127.0.0.1:4566
++ export BUCKET=demo
++ BUCKET=demo
++ export OBJECT_KEY=PS_20174392719_1491204439457_log.csv
++ OBJECT_KEY=PS_20174392719_1491204439457_log.csv
++ export FILEPATH=test-script/PS_20174392719_1491204439457_log.csv
++ FILEPATH=test-script/PS_20174392719_1491204439457_log.csv
++ aws configure set aws_access_key_id 1234
++ kubectl port-forward svc/localstack 4566:4566
+Forwarding from 127.0.0.1:4566 -> 4566
++ aws configure set aws_secret_access_key 1234
++ aws --endpoint-url=http://127.0.0.1:4566 s3api create-bucket --bucket demo
+Handling connection for 4566
+{
+    "Location": "/demo"
+}
++ aws --endpoint-url=http://127.0.0.1:4566 s3api put-object --bucket demo --key PS_20174392719_1491204439457_log.csv --body test-script/PS_20174392719_1491204439457_log.csv
+Handling connection for 4566
+{
+    "ETag": "\"a4b0640ea1b83fdaf128f94bc7e172e1\""
+}
++ cat
++ kubectl apply -f -
+secret/paysim-csv created
++ kubectl apply -f test-script/Asset-0.5.0.yaml -n fybrik-notebook-sample
+asset.katalog.fybrik.io/paysim-csv created
++ cat
++ kubectl apply -f -
+secret/bucket-creds created
++ kubectl apply -f test-script/fybrikStorage-0.5.0.yaml -n fybrik-system
+fybrikstorageaccount.app.fybrik.io/storage-account created
++ kubectl -n fybrik-system create configmap sample-policy --from-file=test-script/sample-policy-0.5.0.rego
+configmap/sample-policy created
++ kubectl -n fybrik-system label configmap sample-policy openpolicyagent.org/policy=rego
+configmap/sample-policy labeled
++ c=0
+++ kubectl get cm sample-policy -n fybrik-system -o 'jsonpath={.metadata.annotations.openpolicyagent\.org/policy-status}'
++ [[ '' != \{\"\s\t\a\t\u\s\"\:\"\o\k\"\} ]]
++ echo waiting
+waiting
++ (( c++ ))
++ sleep 5
+++ kubectl get cm sample-policy -n fybrik-system -o 'jsonpath={.metadata.annotations.openpolicyagent\.org/policy-status}'
++ [[ {"status":"ok"} != \{\"\s\t\a\t\u\s\"\:\"\o\k\"\} ]]
++ kubectl apply -f https://raw.githubusercontent.com/fybrik/hello-world-module/releases/0.5.0/fybrikapplication.yaml -n default
+fybrikapplication.app.fybrik.io/my-notebook created
++ c=0
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ '' != \t\r\u\e ]]
++ echo waiting
+waiting
++ (( c++ ))
++ sleep 6
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ '' != \t\r\u\e ]]
++ echo waiting
+waiting
++ (( c++ ))
++ (( c==30 ))
++ sleep 6
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ '' != \t\r\u\e ]]
++ echo waiting
+waiting
++ (( c++ ))
++ (( c==30 ))
++ sleep 6
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ '' != \t\r\u\e ]]
++ echo waiting
+waiting
++ (( c++ ))
++ (( c==30 ))
++ sleep 6
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ '' != \t\r\u\e ]]
++ echo waiting
+waiting
++ (( c++ ))
++ (( c==30 ))
++ sleep 6
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ '' != \t\r\u\e ]]
++ echo waiting
+waiting
++ (( c++ ))
++ (( c==30 ))
++ sleep 6
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ '' != \t\r\u\e ]]
++ echo waiting
+waiting
++ (( c++ ))
++ (( c==30 ))
++ sleep 6
+++ kubectl get fybrikapplication my-notebook -n default -o 'jsonpath={.status.ready}'
++ [[ true != \t\r\u\e ]]
++ kubectl get pods -n fybrik-blueprints
+NAME                                                      READY   STATUS      RESTARTS   AGE
+my-notebook-default-copy-hello-world-module-chart-ncpll   0/1     Completed   0          20s
+++ kubectl get pods -n fybrik-blueprints -o=name
+++ sed 's/^.\{4\}//'
++ POD_NAME=my-notebook-default-copy-hello-world-module-chart-ncpll
++ kubectl logs my-notebook-default-copy-hello-world-module-chart-ncpll -n fybrik-blueprints
+++ diff test-script/expected-0.5.0.txt res.out
++ DIFF=
++ '[' '' == '' ']'
++ echo 'test succeeded'
+test succeeded
++ pkill kubectl
++ kubectl delete namespace fybrik-notebook-sample
+namespace "fybrik-notebook-sample" deleted
+./test_module.sh: line 197: 827148 Terminated              kubectl port-forward svc/localstack 4566:4566
++ kubectl -n fybrik-system delete configmap sample-policy
+configmap "sample-policy" deleted

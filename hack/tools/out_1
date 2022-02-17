@@ -1,0 +1,129 @@
+"jetstack" already exists with the same configuration, skipping
+"hashicorp" already exists with the same configuration, skipping
+"fybrik-charts" already exists with the same configuration, skipping
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "fybrik-charts" chart repository
+...Successfully got an update from the "hashicorp" chart repository
+...Successfully got an update from the "localstack-charts" chart repository
+...Successfully got an update from the "jetstack" chart repository
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈Happy Helming!⎈
+NAME: cert-manager
+LAST DEPLOYED: Mon Jan 31 21:50:16 2022
+NAMESPACE: cert-manager
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+cert-manager has been deployed successfully!
+
+In order to begin issuing certificates, you will need to set up a ClusterIssuer
+or Issuer resource (for example, by creating a 'letsencrypt-staging' issuer).
+
+More information on the different types of issuers and how to configure them
+can be found in our documentation:
+
+https://cert-manager.io/docs/configuration/
+
+For information on how to configure cert-manager to automatically provision
+Certificates for Ingress resources, take a look at the `ingress-shim`
+documentation:
+
+https://cert-manager.io/docs/usage/ingress/
+NAME: vault
+LAST DEPLOYED: Mon Jan 31 21:51:01 2022
+NAMESPACE: fybrik-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+pod/vault-0 condition met
+NAME: fybrik-crd
+LAST DEPLOYED: Mon Jan 31 21:51:24 2022
+NAMESPACE: fybrik-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NAME: fybrik
+LAST DEPLOYED: Mon Jan 31 21:51:28 2022
+NAMESPACE: fybrik-system
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+namespace/dlf created
+serviceaccount/csi-s3 created
+serviceaccount/csi-attacher created
+serviceaccount/csi-provisioner created
+serviceaccount/dataset-operator created
+secret/webhook-server-tls created
+storageclass.storage.k8s.io/csi-s3 created
+customresourcedefinition.apiextensions.k8s.io/datasetsinternal.com.ie.ibm.hpsys created
+customresourcedefinition.apiextensions.k8s.io/datasets.com.ie.ibm.hpsys created
+clusterrole.rbac.authorization.k8s.io/csi-s3 created
+clusterrole.rbac.authorization.k8s.io/external-attacher-runner created
+clusterrole.rbac.authorization.k8s.io/external-provisioner-runner created
+clusterrole.rbac.authorization.k8s.io/dataset-operator created
+clusterrolebinding.rbac.authorization.k8s.io/csi-s3 created
+clusterrolebinding.rbac.authorization.k8s.io/csi-attacher-role created
+clusterrolebinding.rbac.authorization.k8s.io/csi-provisioner-role created
+clusterrolebinding.rbac.authorization.k8s.io/dataset-operator created
+role.rbac.authorization.k8s.io/external-attacher-cfg created
+role.rbac.authorization.k8s.io/external-provisioner-cfg created
+rolebinding.rbac.authorization.k8s.io/csi-attacher-role-cfg created
+rolebinding.rbac.authorization.k8s.io/csi-provisioner-role-cfg created
+service/csi-attacher-s3 created
+service/csi-provisioner-s3 created
+service/webhook-server created
+daemonset.apps/csi-s3 created
+deployment.apps/dataset-operator created
+statefulset.apps/csi-attacher-s3 created
+statefulset.apps/csi-provisioner-s3 created
+csidriver.storage.k8s.io/ch.ctrox.csi.s3-driver created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/dlf-mutating-webhook-cfg created
+pod/csi-attacher-s3-0 condition met
+pod/csi-provisioner-s3-0 condition met
+pod/csi-s3-jxmpd condition met
+pod/dataset-operator-644f75fcbb-w8mkd condition met
+fybrikmodule.app.fybrik.io/hello-world-module created
+namespace/fybrik-notebook-sample created
+Context "kind-kind" modified.
+"localstack-charts" already exists with the same configuration, skipping
+NAME: localstack
+LAST DEPLOYED: Mon Jan 31 21:52:34 2022
+NAMESPACE: fybrik-notebook-sample
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace fybrik-notebook-sample -l "app.kubernetes.io/name=localstack,app.kubernetes.io/instance=localstack" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace fybrik-notebook-sample $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace fybrik-notebook-sample port-forward $POD_NAME 8080:$CONTAINER_PORT
+pod/localstack-c45cd77bb-n8zjj condition met
+Forwarding from 127.0.0.1:4566 -> 4566
+Handling connection for 4566
+{
+    "Location": "/demo"
+}
+Handling connection for 4566
+{
+    "ETag": "\"a4b0640ea1b83fdaf128f94bc7e172e1\""
+}
+secret/paysim-csv created
+asset.katalog.fybrik.io/paysim-csv created
+secret/bucket-creds created
+fybrikstorageaccount.app.fybrik.io/storage-account created
+configmap/sample-policy created
+configmap/sample-policy labeled
+waiting
+fybrikapplication.app.fybrik.io/my-notebook created
+waiting
+waiting
+waiting
+waiting
+waiting
+waiting
+NAME                                                              READY   STATUS      RESTARTS   AGE
+my-notebook-default-hello-world-module-hello-world-module-6ksgc   0/1     Completed   0          14s
+test succeeded
+namespace "fybrik-notebook-sample" deleted
+configmap "sample-policy" deleted

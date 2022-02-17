@@ -1,0 +1,19 @@
+diff --git a/hack/tools/test_module.sh b/hack/tools/test_module.sh
+index cfaf1dc..4586e6c 100755
+--- a/hack/tools/test_module.sh
++++ b/hack/tools/test_module.sh
+@@ -181,7 +181,6 @@ else
+     RES=1
+ fi
+ 
+-pkill kubectl
+ bin/kubectl delete namespace fybrik-notebook-sample
+ bin/kubectl -n fybrik-system delete configmap sample-policy
+ 
+@@ -189,4 +188,4 @@ if [ ${RES} == 1 ]
+ then
+   echo "test failed"
+   exit 1
+-fi
+\ No newline at end of file
++fi
