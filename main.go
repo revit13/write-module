@@ -8,14 +8,17 @@ import (
 
 	"fybrik.io/fybrik/manager/controllers/utils"
 	"fybrik.io/fybrik/pkg/logging"
+	moduleutils "fybrik.io/write-module/utils"
 )
 
 func main() {
 
-	//Log    zerolog.Logger
 	logger := logging.LogInit(logging.MODULE, "WriteModule")
-	uuid = utils.FybrikAppUUID
-	logger.Info().Str("clusterGroup", clusterGroup).Str("orgID", me.OrgId).Msg("Initializing Razee local")
-	log := r.Log.With().Str(logging.CONTROLLER, "Blueprint").Str(utils.FybrikAppUUID, uuid).Str("blueprint", req.NamespacedName.String()).Logger()
+	uuid := moduleutils.GetAppUUID()
+
+	logger.Info().Msg("Module")
+	log := logger.With().Str(utils.FybrikAppUUID, uuid).Logger()
+	log.Info().Msg("hello")
+
 	fmt.Println("hello world")
 }

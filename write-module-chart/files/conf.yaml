@@ -1,2 +1,5 @@
-app-uuid: {{ get .Values.labels "app.fybrik.io/app-uuid" | default "app-uuid-missing" }}
-data: []
+data: 
+  APP_UUID: {{ .Values.uuid | quote }}
+  PRETTY_LOGGING: {{ .Values.prettyLogging | quote }}
+  LOGGING_VERBOSITY: {{ .Values.loggingVerbosity | quote }}
+
